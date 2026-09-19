@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="300" />
+  <title>شاشة أدوار المرضى | عيادة أمان</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="display-page">
+  <header class="display-header">
+    <div><span class="live-dot"></span> عرض مباشر</div>
+    <h1>🏥 عيادة أمان</h1>
+    <time id="displayClock"></time>
+  </header>
+  <main class="display-main">
+    <section class="now-serving">
+      <p>الرقم الحالي</p>
+      <strong id="displayCurrentNumber">--</strong>
+      <h2 id="displayCurrentName">بانتظار بدء الفحص</h2>
+      <span id="displayRoom">يرجى متابعة الشاشة</span>
+    </section>
+    <section class="display-waiting panel">
+      <div class="display-section-title"><h2>الأدوار القادمة</h2><span id="displayWaitingCount">0 مريض</span></div>
+      <div id="displayWaitingList" class="waiting-grid"></div>
+    </section>
+  </main>
+  <footer class="display-footer">يرجى تجهيز رقم الحجز والانتظار حتى ظهور رقمك</footer>
+  <script src="display.js"></script>
+</body>
+</html>
