@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نظام العيادة</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav-wrap">
+      <h1>🏥 عيادة أمان</h1>
+      <nav class="nav">
+        <button class="nav-btn active" data-page="home">الرئيسية</button>
+        <button class="nav-btn" data-page="booking">حجز الموعد</button>
+        <button class="nav-btn" data-page="scan">مسح الكود</button>
+        <button class="nav-btn" data-page="queue">الأدوار</button>
+        <button class="nav-btn" data-page="admin">الإدارة</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page active" id="home">
+      <div class="hero">
+        <h2>نظام ذكي لإدارة مواعيد العيادة</h2>
+        <p>احجز موعدك، واستلم رمزك، وعند الوصول قم بمسح الكود لتحديث الدور تلقائياً.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <h3>📝 حجز الموعد</h3>
+          <p>تسجيل المريض وتوليد كود بار/QR فريد.</p>
+        </div>
+        <div class="card">
+          <h3>📱 مسح الكود</h3>
+          <p>تأكيد حضور المريض وتحديث الدور في القائمة.</p>
+        </div>
+        <div class="card">
+          <h3>⏱️ إدارة الأدوار</h3>
+          <p>تنظيم قائمة الانتظار حسب الترتيب الفعلي.</p>
+        </div>
+        <div class="card">
+          <h3>🧑‍💼 لوحة الإدارة</h3>
+          <p>عرض إحصاءات، المرضى، المواعيد، والإعدادات.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="booking">
+      <div class="panel">
+        <h2>حجز موعد جديد</h2>
+        <form id="bookingForm">
+          <div class="grid2">
+            <label>
+              الاسم الكامل
+              <input type="text" id="patientName" required />
+            </label>
+            <label>
+              رقم الهاتف
+              <input type="tel" id="patientPhone" required />
+            </label>
+            <label>
+              البريد الإلكتروني
+              <input type="email" id="patientEmail" />
+            </label>
+            <label>
+              نوع الفحص
+              <select id="examType">
+                <option>فحص عام</option>
+                <option>فحص أسنان</option>
+                <option>فحص عيون</option>
+                <option>استشارة</option>
+              </select>
+            </label>
+            <label>
+              تاريخ الموعد
+              <input type="date" id="appointmentDate" required />
+            </label>
+            <label>
+              الوقت
+              <input type="time" id="appointmentTime" required />
+            </label>
+          </div>
+          <label>
+            ملاحظات
+            <textarea id="notes" rows="3"></textarea>
+          </label>
+          <button type="submit" class="primary-btn">حجز الموعد</button>
+        </form>
+
+        <div id="bookingResult" class="result-box hidden">
+          <h3>تم حجز الموعد بنجاح ✓</h3>
+          <p>رقم الحجز: <strong id="bookingCodeText"></strong></p>
+          <div id="barcodeBox" class="barcode-box"></div>
+          <button class="secondary-btn" id="downloadBarcodeBtn">تحميل الكود</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="scan">
+      <div class="panel">
+        <h2>مسح كود المريض</h2>
+        <div class="scanner-box">
+          <video id="scannerVideo" autoplay playsinline muted></video>
+        </div>
+        <div class="scan-actions">
+          <button class="primary-btn" id="startScannerBtn">بدء المسح</button>
+          <button class="secondary-btn" id="stopScannerBtn">إيقاف</button>
+        </div>
+
+        <div id="scanResult" class="result-box hidden">
+          <h3>تمت قراءة الكود بنجاح ✓</h3>
+          <p>اسم المريض: <strong id="scannedPatientName"></strong></p>
+          <p>رقم الدور: <strong id="scannedQueueNumber"></strong></p>
+          <button class="primary-btn" id="confirmArrivalBtn">تأكيد الحضور</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="queue">
+      <div class="panel">
+        <h2>إدارة الأدوار</h2>
+        <div class="stats-row">
+          <div class="stat-box">
+            <span id="waitingCount">0</span>
+            <small>في الانتظار</small>
+          </div>
+          <div class="stat-box accent">
+            <span id="servingCount">0</span>
+            <small>قيد الفحص</small>
+          </div>
+          <div class="stat-box success">
+            <span id="completedCount">0</span>
+            <small>مكتمل</small>
+          </div>
+        </div>
+
+        <div class="current-patient" id="currentPatientBox">
+          لا يوجد مريض جاري فحصه الآن
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>الدور</th>
+              <th>الاسم</th>
+              <th>الوقت</th>
+              <th>الحالة</th>
+            </tr>
+          </thead>
+          <tbody id="queueTableBody"></tbody>
+        </table>
+
+        <div class="queue-actions">
+          <button class="primary-btn" id="nextPatientBtn">المريض التالي</button>
+          <button class="secondary-btn" id="completePatientBtn">إنهاء الفحص</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="admin">
+      <div class="panel">
+        <h2>لوحة الإدارة</h2>
+
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="statsTab">الإحصائيات</button>
+          <button class="tab-btn" data-tab="patientsTab">المرضى</button>
+          <button class="tab-btn" data-tab="appointmentsTab">المواعيد</button>
+          <button class="tab-btn" data-tab="settingsTab">الإعدادات</button>
+        </div>
+
+        <div class="tab-content active" id="statsTab">
+          <div class="stats-row admin-stats">
+            <div class="stat-box big">
+              <span id="totalPatientsStat">0</span>
+              <small>إجمالي المرضى</small>
+            </div>
+            <div class="stat-box big accent">
+              <span id="todayAppointmentsStat">0</span>
+              <small>مواعيد اليوم</small>
+            </div>
+            <div class="stat-box big success">
+              <span id="avgWaitStat">0</span>
+              <small>متوسط الانتظار</small>
+            </div>
+            <div class="stat-box big">
+              <span id="completionRateStat">0%</span>
+              <small>معدل الإنجاز</small>
+            </div>
+          </div>
+          <canvas id="clinicChart" width="900" height="300"></canvas>
+        </div>
+
+        <div class="tab-content" id="patientsTab">
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>الهاتف</th>
+                <th>البريد</th>
+                <th>عدد المواعيد</th>
+                <th>إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="patientsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="tab-content" id="appointmentsTab">
+          <table>
+            <thead>
+              <tr>
+                <th>رقم الحجز</th>
+                <th>المريض</th>
+                <th>التاريخ</th>
+                <th>النوع</th>
+                <th>الحالة</th>
+                <th>إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="tab-content" id="settingsTab">
+          <div class="settings-form">
+            <label>
+              اسم العيادة
+              <input type="text" id="clinicNameInput" />
+            </label>
+            <div class="grid2">
+              <label>
+                من
+                <input type="time" id="openTimeInput" />
+              </label>
+              <label>
+                إلى
+                <input type="time" id="closeTimeInput" />
+              </label>
+              <label>
+                مدة الفحص (دقيقة)
+                <input type="number" id="visitDurationInput" min="5" max="60" />
+              </label>
+              <label>
+                أقصى عدد مرضى
+                <input type="number" id="maxPatientsInput" min="1" max="200" />
+              </label>
+            </div>
+            <button class="primary-btn" id="saveSettingsBtn">حفظ الإعدادات</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
