@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="التسجيل الإلكتروني لمواعيد عيادة أمان" />
+  <title>التسجيل الإلكتروني | عيادة أمان</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="public-page">
+  <header class="topbar">
+    <div class="container nav-wrap">
+      <h1>🏥 عيادة أمان</h1>
+      <a class="secondary-btn nav-link" href="index.html">لوحة الإدارة</a>
+    </div>
+  </header>
+  <main class="container page active">
+    <div class="hero">
+      <h2>التسجيل الإلكتروني وحجز موعد</h2>
+      <p>سجّل بياناتك من أي جهاز، واحصل على رقم الحجز والكود الخاص بك.</p>
+    </div>
+    <div class="panel registration-layout">
+      <form id="onlineBookingForm">
+        <h2>بيانات المريض</h2>
+        <div class="grid2">
+          <label>الاسم الكامل<input id="onlineName" required autocomplete="name" /></label>
+          <label>رقم الهاتف<input id="onlinePhone" type="tel" required autocomplete="tel" /></label>
+          <label>البريد الإلكتروني<input id="onlineEmail" type="email" autocomplete="email" /></label>
+          <label>نوع الفحص<select id="onlineExam"><option>فحص عام</option><option>فحص أسنان</option><option>فحص عيون</option><option>استشارة</option></select></label>
+          <label>التاريخ<input id="onlineDate" type="date" required /></label>
+          <label>الوقت<input id="onlineTime" type="time" required /></label>
+        </div>
+        <label>ملاحظات<textarea id="onlineNotes" rows="3"></textarea></label>
+        <button class="primary-btn" type="submit">تأكيد التسجيل</button>
+      </form>
+      <aside id="onlineResult" class="result-box hidden">
+        <h2>تم التسجيل بنجاح ✓</h2>
+        <p>احتفظ بالبيانات التالية عند الحضور:</p>
+        <p>رقم الحجز: <strong id="onlineBookingId"></strong></p>
+        <p>رمز الدور: <strong id="onlineQueueNumber"></strong></p>
+        <div id="onlineBarcode" class="barcode-box"></div>
+        <button id="printBooking" class="secondary-btn">طباعة الحجز</button>
+      </aside>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+  <script src="online.js"></script>
+</body>
+</html>
